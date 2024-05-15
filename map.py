@@ -10,19 +10,21 @@ import json
 # location = geolocator.geocode("Hanoi, Vietnam")
 
 # Create a Folium map centered around the location
-m = folium.Map(location=[15.5, 106.5], zoom_start=6,tiles="cartodb positron")
+m = folium.Map(location=[15.5, 106.5], zoom_start=6,tiles="cartodb positron", min_zoom=3)
 
 # Load GeoJSON data for Vietnam's provinces
 with open('diaphantinh.geojson') as f:
     province_data = f.read()
 
-def highlight_function(feature):
-    return {
-        'weight': 2,
-        'color': 'red',         # Highlight border color
-        'fillColor': 'orange', # Highlight fill color
-        'fillOpacity': 0.7
-    }
+# def highlight_function(feature):
+#     return {
+#         'weight': 2,
+#         'color': 'red',         # Highlight border color
+#         'fillColor': '#B47107', # Highlight fill color
+#         'fillOpacity': 0.7
+#     }
+
+highlight_function = lambda x: {'fillColor': '#B47107', 'color':'red', 'fillOpacity': 0.50, 'weight': 0.5}
 
 # Define function to reset the highlight
 def reset_highlight(feature):
@@ -46,15 +48,21 @@ def style_function(feature):
 
 
 # Add GeoJSON layer for province borders
-geojson_layer = folium.GeoJson(province_data, name='province borders',style_function=style_function).add_to(m)
-geojson_layer.add_to(m)
 folium.GeoJson(
     province_data, 
     name='province borders',
     style_function=style_function,
     highlight_function=highlight_function,
     # show province name tooltip 
-    tooltip=folium.GeoJsonTooltip(fields=['ten_tinh'], aliases=['Province:'])
+    tooltip=folium.GeoJsonTooltip(fields=['ten_tinh'], aliases=['Province:']),
+#     tooltip = folium.GeoJsonTooltip(fields=['ten_tinh'], aliases=['Province:'], localize=True, labels=True, style="""
+#     background-color: transparent;
+#     border: none;
+#     border-radius: 0;
+#     box-shadow: none;
+# """)
+    # popup=folium.GeoJsonPopup(fields=[get_question], labels=False)
+
 ).add_to(m)
 
 # Add a marker for the location
