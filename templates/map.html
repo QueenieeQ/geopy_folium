@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    
+    <title> Ninh Xuân Quý </title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     
         <script>
@@ -53,12 +53,38 @@
             
 </head>
 <body>
+<!-- Folium map container -->
+    <!-- <div id="map-container" style="width: 800px; height: 600px;"></div> -->
+
     
-    
-            <div class="folium-map" id="map_14d6d40d991166ca5d9ef9d0dc55605a" ></div>
+    <div class="folium-map" id="map_14d6d40d991166ca5d9ef9d0dc55605a" style="width: 800px; height: 600px;position: absolute; left: 50%; top: 50%; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%);"></div>
+
+    <h2 id="title-text" style="text-align: center; white-space: nowrap; display: block; margin: auto; margin-top: 50px; font-size: 27.0038px;"><b>Hà Nội</b> ở đâu</h2>
+
         
 </body>
 <script>
+
+            function onEachFeature(feature, layer) {
+            layer.on({
+            click: clickEvent
+            });
+            }
+
+            function clickEvent(e) {
+            // e.target gives you access to the clicked layer
+            }
+
+            function clickEvent(e) {
+            var clickedProvince = e.target;
+
+            if (clickedProvince === correctAnswer) {
+                alert('Correct!');
+            } else {
+                clickedProvince.setStyle({color: 'red'});
+                alert('Try again.');
+            }
+            }
     
     
             var map_14d6d40d991166ca5d9ef9d0dc55605a = L.map(
