@@ -16,6 +16,23 @@ m = folium.Map(location=[15.5, 106.5], zoom_start=6,tiles="cartodb positron")
 with open('diaphantinh.geojson') as f:
     province_data = f.read()
 
+def highlight_function(feature):
+    return {
+        'weight': 2,
+        'color': 'red',         # Highlight border color
+        'fillColor': 'orange', # Highlight fill color
+        'fillOpacity': 0.7
+    }
+
+# Define function to reset the highlight
+def reset_highlight(feature):
+    return {
+        'color': '#989388',        # Border color
+        'weight': 1,            # Line width (thinner)
+        'fillColor': '#F0E4BC',
+        'fillOpacity': 0.1,     # Fill opacity
+    }
+
 # Define a style function to customize the appearance of the GeoJSON features
 def style_function(feature):
     return {
@@ -32,6 +49,13 @@ def style_function(feature):
 geojson_layer = folium.GeoJson(province_data, name='province borders',style_function=style_function).add_to(m)
 geojson_layer.add_to(m)
 
+folium.GeoJson(
+    province_data, 
+    name='province borders',
+    style_function=style_function,
+    highlight_function=highlight_function
+).add_to(m)
+
 # Add a marker for the location
 # folium.Marker([location.latitude, location.longitude], popup="Hanoi, Vietnam").add_to(m)
 
@@ -41,13 +65,10 @@ function highlightFeature(e) {
     var layer = e.target;
     layer.setStyle({
         weight: 2,
-        color: '#666',
+        color: 'red',         // Highlight border color
         fillColor: 'orange', // Highlight fill color
         fillOpacity: 0.7
     });
-    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-        layer.bringToFront();
-    }
 }
 
 function resetHighlight(e) {
@@ -57,9 +78,13 @@ function resetHighlight(e) {
 function onEachFeature(feature, layer) {
     layer.on({
         mouseover: highlightFeature,
-        mouseout: resetHighlight
+        mouseout: resetHighlight,
+        click: function(e) { // Add click event listener
+            highlightFeature(e); // Call highlight function on click
+        }
     });
 }
+
 """
 
 # Add custom JavaScript code to the map
@@ -68,6 +93,7 @@ folium.Map().add_child(folium.Element(f"""
     {highlight_function}
     </script>
 """))
+
 
 folium.TileLayer('cartodb positron', opacity=0.5).add_to(m)
 
