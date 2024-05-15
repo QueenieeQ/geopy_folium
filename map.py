@@ -48,12 +48,13 @@ def style_function(feature):
 # Add GeoJSON layer for province borders
 geojson_layer = folium.GeoJson(province_data, name='province borders',style_function=style_function).add_to(m)
 geojson_layer.add_to(m)
-
 folium.GeoJson(
     province_data, 
     name='province borders',
     style_function=style_function,
-    highlight_function=highlight_function
+    highlight_function=highlight_function,
+    # show province name tooltip 
+    tooltip=folium.GeoJsonTooltip(fields=['ten_tinh'], aliases=['Province:'])
 ).add_to(m)
 
 # Add a marker for the location
